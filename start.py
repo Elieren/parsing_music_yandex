@@ -5,7 +5,6 @@ import os
 import platform
 import re
 import numpy as np
-import pygame
 
 
 name_list = []
