@@ -80,8 +80,7 @@ class HitmotopPars():
         self.__validity_link = []
     
     def info(self):
-        i = 0
-        for search in self.__full_info:
+        for i, search in enumerate(self.__full_info):
             try:
                 url = f'https://rur.hitmotop.com/search?q={search}'
 
@@ -104,7 +103,6 @@ class HitmotopPars():
 
             except:
                 self.__time_array[i].append(0)
-            i += 1
 
         self.__validity()
 
