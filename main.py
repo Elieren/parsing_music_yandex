@@ -43,7 +43,7 @@ class YandexInfoMusic():
                     ).get_text(strip=True)
                 self.__remix.append(remix_track)
 
-            except:
+            except Exception:
                 self.__remix.append(' ')
 
         for artist in self.__all_artist:
@@ -110,7 +110,7 @@ class HitmotopPars():
                     time = time.replace(':', '.')
                     self.__time_array[i].append(float(time))
 
-            except:
+            except Exception:
                 self.__time_array[i].append(0)
 
         self.__validity()
