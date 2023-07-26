@@ -1,9 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import lxml
-import os
-import platform
-import re
 import numpy as np
 
 
@@ -16,11 +12,14 @@ class YandexInfoMusic():
         self.__artists = []
         self.__time = []
         self.__full_info = []
-    
+
     def info(self):
         responce = requests.get(self.__url).text
         soup = BeautifulSoup(responce, 'lxml')
-        block = soup.find("div", class_='lightlist lightlist_tracks lightlist_clean')
+        block = soup.find(
+            "div",
+            class_='lightlist lightlist_tracks lightlist_clean'
+            )
         self.__all_name = block.find_all("div", class_='d-track__name')
         self.__all_artist = block.find_all('div', class_='d-track__meta')
         self.__all_time = block.find_all('div', class_='d-track__end-column')
@@ -33,13 +32,15 @@ class YandexInfoMusic():
     def __selection(self):
         for name in self.__all_name:
             name_track = name.find(
-                'a', class_='d-track__title deco-link deco-link_stronger').get_text(strip=True)
+                'a', class_='d-track__title deco-link deco-link_stronger'
+                ).get_text(strip=True)
             self.__name.append(name_track)
 
         for remix in self.__all_name:
             try:
                 remix_track = remix.find(
-                    'span', class_='d-track__version deco-typo-secondary').get_text(strip=True)
+                    'span', class_='d-track__version deco-typo-secondary'
+                    ).get_text(strip=True)
                 self.__remix.append(remix_track)
 
             except:
@@ -52,22 +53,30 @@ class YandexInfoMusic():
 
         for time in self.__all_time:
             time_track = time.find(
-                'span', class_='typo-track deco-typo-secondary').get_text(strip=True)
+                'span', class_='typo-track deco-typo-secondary'
+                ).get_text(strip=True)
             time = time_track.replace(':', '.')
             self.__time.append(float(time))
-        
+
     def __transformation(self):
         i = 0
 
-        info_array = np.column_stack([self.__name, self.__remix, self.__artists])
+        info_array = np.column_stack([
+            self.__name,
+            self.__remix,
+            self.__artists
+            ])
 
         while i < len(self.__name):
-            l = info_array[i][0] + ' ' + info_array[i][1] + ' ' + info_array[i][2]
-            self.__full_info.append(l)
+            complete_data = info_array[i][0] + \
+                ' ' + info_array[i][1] + \
+                ' ' + info_array[i][2]
+            self.__full_info.append(complete_data)
             i += 1
-    
+
         self.__time_array = [[] for i in range(len(self.__full_info))]
         self.__links = [[] for i in range(len(self.__full_info))]
+
 
 class HitmotopPars():
 
@@ -78,7 +87,7 @@ class HitmotopPars():
         self.__time = time
         self.__name = []
         self.__validity_link = []
-    
+
     def info(self):
         for i, search in enumerate(self.__full_info):
             try:
@@ -131,12 +140,13 @@ class HitmotopPars():
                     del self.__time_array[0]
             i = 0
 
+
 class Download():
 
     def __init__(self, full_info, valid_link):
         self.__full_info = full_info
         self.__valid_link = valid_link
-    
+
     def info(self):
 
         for i, link in enumerate(self.__valid_link):
@@ -145,6 +155,7 @@ class Download():
             print(f"Download: {name}...")
             with open(f'{name}.mp3', 'wb') as file:
                 file.write(music_bytes)
+
 
 url = input("link on playlist: ")
 
